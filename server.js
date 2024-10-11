@@ -60,7 +60,7 @@ app.post("/inscription", [
         console.log("Utilisateur inscrit avec succès");
         res.send("Inscription réussie !");
     });
-});
+    });
 
 // route pour la connexion d'un utilisateur
 
@@ -243,6 +243,24 @@ app.get ("/", (req, res) => {
         })
     } )
 
+
+    app.put("/people-modify/:id", async (req,res)=>{
+        // Hash du mot de passe
+       
+        
+        const id = req.params.id;
+        const { nom, prenom, tel,naissance,email, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const query = "UPDATE people SET NOM = ?, PRENOM = ?, TEL = ?, NAISSANCE = ?, EMAIL = ?, PASSWORD = ? WHERE id = ?";
+        db.query(query,[nom, prenom, tel, naissance,email, hashedPassword, id ], (err,result)=>{
+            if(err){
+                console.error("ERREUR lors de la modif du pword",err);
+                res.status(500).send("erreur serveur");
+                return;
+            }
+            console.log("information modifié avec succès");
+        })
+    })
 
 // Lancer le serveur
 app.listen(port, () => {
